@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--To add the red bar on the top -->
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="45.0dip"
+        android:background="#ffcd2626"
+        android:gravity="center_vertical">
+
+        <!--To add the title_city png -->
+        <ImageView
+            android:id="@+id/title_city_manager"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:src="@drawable/title_city" />
+
+        <!--To add the  -->
+        <ImageView
+            android:id="@+id/city_seperator"
+            android:layout_width="1.0dip"
+            android:layout_height="40dip"
+            android:layout_marginTop="2.0dip"
+            android:layout_toRightOf="@id/title_city_manager"
+            android:background="#A71717" />
+        <!--To add the text bar -->
+        <TextView
+            android:id="@+id/title_city_name"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_toRightOf="@id/city_seperator"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dip"
+            android:text="北京天气"
+            android:textColor="#ffffffff"
+            android:textSize="22.0sp" />
+
+        <!--To add the title_update png -->
+        <ImageView
+            android:id="@+id/title_update_btn"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:src="@drawable/title_update" />
+
+        <!--To add the title_share png -->
+        <ImageView
+            android:id="@+id/title_share"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_toLeftOf="@+id/title_update_btn"
+            android:src="@drawable/title_share" />
+
+        <!--To add the base_action_bar_action_city png -->
+        <ImageView
+            android:id="@+id/title_location"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_toLeftOf="@+id/title_share"
+            android:src="@drawable/base_action_bar_action_city" />
+
+    </RelativeLayout>
+
+    <!-- Too add the today weather-->
+    <RelativeLayout
+        android:id="@+id/today"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/title">
+
+        <!--To add the background image -->
+        <ImageView
+            android:id="@+id/background"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/biz_plugin_weather_shenzhen_bg"/>
+
+        <!--To add the city -->
+        <TextView
+            android:id="@+id/city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:textSize="40sp"
+            android:layout_marginLeft="25dip"
+            android:layout_marginTop="15dip"
+         />
+        
+       <!-- To add the time-->
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:typeface="monospace"
+            android:textSize="15sp"
+            android:layout_marginLeft="23dip"
+            android:layout_below="@+id/city"
+            android:layout_marginTop="5dip"
+            android:text="今天13:25发布"/>
+
+        <!--To add the wet -->
+        <TextView
+            android:id="@+id/wet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:typeface="monospace"
+            android:textSize="15sp"
+            android:layout_marginLeft="23dip"
+            android:layout_below="@+id/time"
+            android:layout_marginTop="2dip"
+            android:text="湿度：75%"/>
+
+        <!--To add the biz_plugin_weather_0_50.png -->
+        <ImageView
+            android:id="@+id/head"
+            android:layout_width="70dip"
+            android:layout_height="70dip"
+
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dip"
+            android:layout_marginTop="10dip"/>
+
+        <!--To add the PM Value -->
+        <TextView
+            android:id="@+id/PM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:typeface="monospace"
+            android:textSize="13sp"
+            android:layout_toLeftOf="@+id/head"
+            android:layout_marginTop="18dip"
+            android:layout_marginRight="10dip"
+            android:text="PM2.5"/>
+
+        <!--To add the PM value -->
+        <TextView
+            android:id="@+id/PMValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:typeface="monospace"
+            android:textSize="25sp"
+            android:layout_toLeftOf="@+id/head"
+            android:layout_below="@+id/PM"
+            android:layout_marginTop="5dip"
+            android:layout_marginRight="3dip"
+            android:text="100"/>
+
+        <!--To add the result-->
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:typeface="monospace"
+            android:textSize="20sp"
+            android:layout_below="@+id/head"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dip"
+            android:layout_marginTop="3dip"
+            android:text="重度污染"/>
+
+        <!--To add the sun image -->
+        <ImageView
+            android:id="@+id/weatherpic"
+            android:layout_width="130dip"
+            android:layout_height="130dip"
+            android:layout_marginTop="5dip"
+            android:layout_alignTop="@+id/wet"
+            android:layout_alignParentLeft="true"/>
+
+        <!--To add the date -->
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#ffffffff"
+            android:text="今天 星期四"
+            android:layout_below="@+id/result"
+            android:layout_toRightOf="@+id/weatherpic"
+            android:layout_marginTop="10dip"
+            />
+        <!--To add the temperature -->
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#ffffffff"
+            android:text="5℃～-5℃"
+            android:layout_below="@+id/date"
+            android:layout_toRightOf="@+id/weatherpic"
+            android:layout_alignLeft="@+id/date"
+            />
+        <!-- To add the weather-->
+        <TextView
+            android:id="@+id/weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#ffffffff"
+            android:text="晴转多云"
+            android:layout_below="@+id/temperature"
+            android:layout_toRightOf="@+id/weatherpic"
+            android:layout_alignLeft="@+id/date"
+            />
+
+        <!-- To add the wind-->
+        <TextView
+            android:id="@+id/wind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#ffffffff"
+            android:text="微风"
+            android:layout_below="@+id/weather"
+            android:layout_toRightOf="@+id/weatherpic"
+            android:layout_alignLeft="@+id/date"
+            />
+        </RelativeLayout>
+</RelativeLayout>
