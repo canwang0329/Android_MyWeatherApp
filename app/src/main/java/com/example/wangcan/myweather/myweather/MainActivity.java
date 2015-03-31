@@ -1,6 +1,8 @@
 package com.example.wangcan.myweather.myweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import com.example.wangcan.myweather.R;
 import com.example.wangcan.myweather.bean.TodayWeather;
 import com.example.wangcan.myweather.util.NetUtil;
+import com.example.wangcan.myweather.util.PinYin;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,26 +32,36 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private ImageView mUpdatebtn;
+    private ImageView mUpdatebtn,mCitySelect;
     private TextView cityTv,timeTv,humidityTv,weekTv,pmDataTv,pmQualityTv,temperatureTv,climateTv,windTv;
     private ImageView weatherImg,pmImg;
     private static final int UPDATE_TODAY_WEATHER=1;
     private static final String PM_FILE_NAME1="@drawable/biz_plugin_weather_0_50.png";
+    private static final String tag="MYAPP";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
+        Log.v(tag,"MainActivity-->onCreate()");
 
         //add listener
         mUpdatebtn=(ImageView)findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
 
+        //add select-city listener
+        mCitySelect=(ImageView)findViewById(R.id.title_city_manager);
+        mCitySelect.setOnClickListener(this);
+
         initView();
+
     }
 
     //定义主线程handler
@@ -104,30 +117,53 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         windTv.setText(todayWeather.getFengli());
 
         //更新PM值头像
-        int pmData = Integer.parseInt(todayWeather.getPm25());
-        if (pmData >= 0 && pmData <= 50) {
-            pmImg.setImageResource(R.drawable.biz_plugin_weather_0_50);
-        } else if (pmData >= 51 && pmData <= 100) {
-            pmImg.setImageResource(R.drawable.biz_plugin_weather_51_100);
-        } else if (pmData >= 101 && pmData <= 150) {
-            pmImg.setImageResource(R.drawable.biz_plugin_weather_101_150);
-        } else if (pmData >= 150 && pmData <= 200) {
-            pmImg.setImageResource(R.drawable.biz_plugin_weather_151_200);
-        } else if (pmData >= 201 && pmData <= 300) {
-            pmImg.setImageResource(R.drawable.biz_plugin_weather_201_300);
+        int pmValue = Integer.parseInt(todayWeather.getPm25().trim());
+        String pmImgStr = "0_50";
+        if (pmValue > 50 && pmValue < 200) {
+            int startV = (pmValue - 1) / 50 * 50 + 1;
+            int endV = ((pmValue - 1) / 50 + 1) * 50;
+            pmImgStr = Integer.toString(startV) + "_" + Integer.toString(endV);
+        }
+        else if(pmValue>=200){
+            pmImgStr="201_300";
+        }
+        else if(pmValue>300){
+            pmImgStr="greater_300";
         }
 
-        //跟新天气信息
-        String climate=todayWeather.getType();
-        if(climate.equals("晴")){
-            weatherImg.setImageResource(R.drawable.biz_plugin_weather_qing);
-        }else if(climate.equals("暴雨")){
-            weatherImg.setImageResource(R.drawable.biz_plugin_weather_baoyu);
+        String typeImg="biz_plugin_weather_"+ PinYin.converterToSpell(todayWeather.getType());
+        Class aClass=R.drawable.class;
+        int typeId=-1;
+        int pmImgId=-1;
+        try{
+            Field field=aClass.getField(typeImg);
+            Object value=field.get(new Integer(0));
+            typeId=(int)value;
+
+            Field pmfield=aClass.getField("biz_plugin_weather_"+pmImgStr);
+            Object pmImg0=field.get(new Integer(0));
+            pmImgId=(int)pmImg0;
+
+        }catch(Exception e){
+            if(-1==typeId){
+                typeId=R.drawable.biz_plugin_weather_qing;
+            }
+            if(-1==pmImgId){
+                pmImgId=R.drawable.biz_plugin_weather_0_50;
+            }
+
+        }finally {
+            Drawable drawable=getResources().getDrawable(typeId);
+            weatherImg.setImageDrawable(drawable);
+            drawable=getResources().getDrawable(pmImgId);
+            pmImg.setImageDrawable(drawable);
+            //更新天气图片
+            Toast.makeText(MainActivity.this, "更新成功", Toast.LENGTH_LONG).show();
         }
 
-        //更新天气图片
 
-        Toast.makeText(MainActivity.this, "更新成功", Toast.LENGTH_LONG).show();
+
+
     }
 
     @Override
@@ -148,6 +184,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Log.v("myWeather","No Network");
                 Toast.makeText(MainActivity.this,"No Network,Please Check!",Toast.LENGTH_LONG).show();
             }
+        }
+        //add select city listener
+        else if(view.getId()==R.id.title_city_manager){
+              Intent i=new Intent(MainActivity.this,SelectCity.class);
+              startActivity(i);
         }
     }
 
