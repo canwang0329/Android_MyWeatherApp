@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-    //定义主线程handler
+    //定义主线程handler，更新天气信息
     private Handler mhandler=new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -141,7 +141,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             typeId=(int)value;
 
             Field pmfield=aClass.getField("biz_plugin_weather_"+pmImgStr);
-            Object pmImg0=field.get(new Integer(0));
+            Object pmImg0=pmfield.get(new Integer(0));
             pmImgId=(int)pmImg0;
 
         }catch(Exception e){
@@ -193,12 +193,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     /**
-     * search the weather information through the city code
+     * search the weather information through the network
      * @param cityCode
      */
 
     private void queryWeatherCode(String cityCode){
-        //get the url address
+        //get the url address,拼接字符串获得URL地址
         final String address="http://wthrcdn.etouch.cn/WeatherApi?citykey="+cityCode;
         Log.v("myWeather",address);
 
@@ -208,26 +208,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 try {
                     //获取网络数据
                     HttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpget = new HttpGet(address);
+                    HttpGet httpget = new HttpGet(address);//传入URL地址获取网页资源
                     HttpResponse httpResponse = httpClient.execute(httpget);
 
                     if(httpResponse.getStatusLine().getStatusCode()==200){
                         HttpEntity entity=httpResponse.getEntity();
 
                         InputStream responseStream=entity.getContent();
-                        responseStream=new GZIPInputStream(responseStream);
+                        responseStream=new GZIPInputStream(responseStream);//将文件解压缩
 
                         BufferedReader reader=new BufferedReader(new InputStreamReader(responseStream));
                         StringBuilder response=new StringBuilder();
                         String str=null;
                         while((str=reader.readLine())!= null){
-                            response.append(str);
+                            response.append(str);//将网页获得的内容转化为String
                         }
 
                         Log.v("myWeather",response.toString());
                         TodayWeather todayWeather=parseXml(response.toString());
                         if(todayWeather!=null){
-                            //发送消息由主线程更新UI
+                            //发送消息通知主线程更新UI
                             Message msg=new Message();
                             msg.what=UPDATE_TODAY_WEATHER;
                             msg.obj=todayWeather;
@@ -244,12 +244,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     /**
-     * parserXMl:use Pull method to parse the XML
+     * parserXMl:use Pull method to parse the XML 解析XML文件
      * @param xmldata
      * @return
      */
     private TodayWeather parseXml(String xmldata){
-        //新建TodayWeather对象
+        //新建TodayWeather对象，将解析出来的数据放入该对象中
         TodayWeather todayWeather=new TodayWeather();
         try{
             int fengxiangCount=0;
@@ -275,7 +275,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         if (xmlPullParser.getName().equals("city")) {
                             //触发下一个事件
                             eventType = xmlPullParser.next();
-                            todayWeather.setCity(xmlPullParser.getText());
+                            todayWeather.setCity(xmlPullParser.getText());//通过getText()获得xml文件中的文字信息
                             Log.v("myapp", "the city is" + xmlPullParser.getText());
                         } else if (xmlPullParser.getName().equals("updatetime")) {
                             eventType = xmlPullParser.next();
@@ -329,8 +329,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             typeCount++;
                         }
                         break;
-                    case XmlPullParser.END_TAG:
-                        break;
+                   // case XmlPullParser.END_TAG:
+                     //   break;
                 }
 
                 eventType=xmlPullParser.next();
