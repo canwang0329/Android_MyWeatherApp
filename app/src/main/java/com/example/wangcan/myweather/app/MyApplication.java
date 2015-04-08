@@ -28,7 +28,7 @@ public class MyApplication extends Application {
         Log.v(tag,"MyApplication-->onCreate()");
         mApplication=this;
         mCityDB=openCityDB();
-        initCityList();
+        //initCityList();
     }
 
     public static Application getInstance(){
@@ -68,7 +68,7 @@ public class MyApplication extends Application {
         return new CityDB(this,path);
     }
 
-    private void initCityList(){
+    /*private void initCityList(){
         mCityList=new ArrayList<>();
         new Thread(new Runnable() {
             @Override
@@ -77,15 +77,18 @@ public class MyApplication extends Application {
             }
         }).start();
     }
-    //
-    public static List<String> prepareCityList(){
+
+    public List<String> prepareCityList(){
         List<String> mcity=new ArrayList<>();
         mCityList=mCityDB.getAllCity();//获取数据库返回记录
         for(City city:mCityList){
             String cityname=city.getCity();
+            String cityNumber=city.getNumber();
+
             mcity.add(cityname);
             Log.v(tag,cityname);
         }
         return mcity;
     }
+*/
 }

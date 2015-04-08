@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <!--To add the red bar on the top -->
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="45.0dip"
+        android:background="#ffcd2626"
+        android:gravity="center_vertical">
+
+        <!--To add the title_city png -->
+        <ImageView
+            android:id="@+id/title_city_manager"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:src="@drawable/title_city" />
+
+        <!--To add the  -->
+        <ImageView
+            android:id="@+id/city_seperator"
+            android:layout_width="1.0dip"
+            android:layout_height="40dip"
+            android:layout_marginTop="2.0dip"
+            android:layout_toRightOf="@id/title_city_manager"
+            android:background="#A71717" />
+        <!--To add the text bar -->
+        <TextView
+            android:id="@+id/title_city_name"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_toRightOf="@id/city_seperator"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dip"
+            android:textColor="#ffffffff"
+            android:textSize="22.0sp" />
+
+        <!--To add the title_update png -->
+        <ImageView
+            android:id="@+id/title_update_btn"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:src="@drawable/title_update" />
+
+        <ProgressBar
+            android:id="@+id/title_update_progress"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            style="@style/title_update_progressbar_style"
+            android:visibility="gone"/>
+
+
+        <!--To add the title_share png -->
+        <ImageView
+            android:id="@+id/title_share"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_toLeftOf="@+id/title_update_btn"
+            android:src="@drawable/title_share" />
+
+        <!--To add the base_action_bar_action_city png -->
+        <ImageView
+            android:id="@+id/title_location"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_toLeftOf="@+id/title_share"
+            android:src="@drawable/base_action_bar_action_city" />
+
+    </RelativeLayout>
+</RelativeLayout>

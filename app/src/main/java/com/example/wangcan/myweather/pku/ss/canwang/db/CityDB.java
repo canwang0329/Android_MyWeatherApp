@@ -41,5 +41,18 @@ public class CityDB {
         return list;
     }
 
+    public List<String> searchCity(String city) {
+
+        List<String> resultList = new ArrayList<>();
+        Cursor c = db.rawQuery("select * from " + CITY_TABLE_NAME +" where city like " + "'%" + city + "%'", null);//返回多行数据
+        while (c.moveToNext()) {
+            String  result = c.getString(c.getColumnIndex("city"));
+            if (result != null || result != "") {
+                resultList.add(result);
+            }
+        }
+        return resultList;
+    }
+
 
 }
