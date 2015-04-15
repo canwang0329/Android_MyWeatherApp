@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/week_weather_infomation"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/weatherpic"
+    android:orientation="horizontal">
+
+
+    <HorizontalScrollView
+        android:id="@+id/weather_scrollview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:id="@+id/week_weather_info1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="30dip">
+
+            <!--周一天气 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/week_date1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="星期五"
+                    android:textColor="#ffffffff"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:id="@+id/week_weather1"
+                    android:layout_width="60dip"
+                    android:layout_height="60dip"
+                    android:layout_below="@+id/week_date1"
+                    android:layout_gravity="center"
+                    android:src="@drawable/biz_plugin_weather_qing" />
+
+                <TextView
+                    android:id="@+id/week_tempreture1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/week_weather1"
+                    android:layout_gravity="center"
+                    android:text="5℃～-5℃"
+                    android:textColor="#ffffffff"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/week_weather_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/week_tempreture1"
+                    android:layout_gravity="center"
+                    android:text="晴转多云"
+                    android:textColor="#ffffffff"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/week_wind1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/week_weather_1"
+                    android:layout_gravity="center"
+                    android:text="微风"
+                    android:textColor="#ffffffff"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </HorizontalScrollView>
+
+</LinearLayout>

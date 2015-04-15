@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -41,41 +43,48 @@ import java.util.zip.GZIPInputStream;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     private ImageView mUpdatebtn, mCitySelect;
+    private LinearLayout mlayout;
     private ProgressBar mUpdateProBar;
-    private TextView cityTv,timeTv,humidityTv,weekTv,pmDataTv,pmQualityTv,temperatureTv,climateTv,windTv,titleNameTv;
-    private ImageView weatherImg,pmImg;
+    private TextView cityTv, timeTv, humidityTv, weekTv, pmDataTv, pmQualityTv, temperatureTv, climateTv, windTv, titleNameTv;
+    private ImageView weatherImg, pmImg;
     private String cityCode;
-    private static final int UPDATE_TODAY_WEATHER=1;
-    private static final String PM_FILE_NAME1="@drawable/biz_plugin_weather_0_50.png";
-    private static final String tag="MYAPP";
+    private static final int UPDATE_TODAY_WEATHER = 1;
+    private static final String PM_FILE_NAME1 = "@drawable/biz_plugin_weather_0_50.png";
+    private static final String tag = "MYAPP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
-        Log.v(tag,"MainActivity-->onCreate()");
+        Log.v(tag, "MainActivity-->onCreate()");
 
         //add listener
-        mUpdatebtn=(ImageView)findViewById(R.id.title_update_btn);
+        mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
         //为更新按钮加入progressbar
-        mUpdateProBar=(ProgressBar)findViewById(R.id.title_update_progress);
+        mUpdateProBar = (ProgressBar) findViewById(R.id.title_update_progress);
 
         //add select-city listener
-        mCitySelect=(ImageView)findViewById(R.id.title_city_manager);
+        mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
         mCitySelect.setOnClickListener(this);
+
+        mUpdateProBar = (ProgressBar) findViewById(R.id.title_update_progress);
+        mUpdateProBar.setOnClickListener(this);
+
+        //添加layout,更新该星期其他时间的天气
+        mlayout = (LinearLayout) findViewById(R.id.week_weather_info1);
 
         initView();
 
     }
 
     //定义主线程handler，更新天气信息
-    private Handler mhandler=new Handler() {
+    private Handler mhandler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case UPDATE_TODAY_WEATHER:
-                    updateTodayWeather((TodayWeather)msg.obj);
+                    updateTodayWeather((TodayWeather) msg.obj);
                     break;
                 default:
                     break;
@@ -95,10 +104,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         temperatureTv = (TextView) findViewById(R.id.temperature);
         climateTv = (TextView) findViewById(R.id.weather);
         windTv = (TextView) findViewById(R.id.wind);
-        titleNameTv=(TextView)findViewById(R.id.title_city_name);
+        titleNameTv = (TextView) findViewById(R.id.title_city_name);
         //获得ImageView
-        pmImg=(ImageView)findViewById(R.id.head);
-        weatherImg=(ImageView)findViewById(R.id.weatherpic);
+        pmImg = (ImageView) findViewById(R.id.head);
+        weatherImg = (ImageView) findViewById(R.id.weatherpic);
         cityTv.setText("N/A");
         timeTv.setText("N/A");
         humidityTv.setText("N/A");
@@ -113,22 +122,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     //更新天气给控件赋值
-    public void updateTodayWeather(TodayWeather todayWeather){
-        String pmImgStr=null;
-        String typeImg=null;
+    public void updateTodayWeather(TodayWeather todayWeather) {
+        String pmImgStr = null;
+        String typeImg = null;
         cityTv.setText(todayWeather.getCity());
-        timeTv.setText("今天"+todayWeather.getUpdatetime()+"发布");
-        humidityTv.setText("湿度："+todayWeather.getShidu());
+        timeTv.setText("今天" + todayWeather.getUpdatetime() + "发布");
+        humidityTv.setText("湿度：" + todayWeather.getShidu());
         weekTv.setText(todayWeather.getDate());
         pmDataTv.setText(todayWeather.getPm25());
         pmQualityTv.setText(todayWeather.getQuality());
-        temperatureTv.setText(todayWeather.getHigh()+"～"+todayWeather.getLow());
+        temperatureTv.setText(todayWeather.getHigh() + "～" + todayWeather.getLow());
         climateTv.setText(todayWeather.getType());
         windTv.setText(todayWeather.getFengli());
-        titleNameTv.setText(todayWeather.getCity()+"天气");
+        titleNameTv.setText(todayWeather.getCity() + "天气");
 
         //更新PM值头像
-        if(todayWeather.getPm25()!=null) {
+        if (todayWeather.getPm25() != null) {
             int pmValue = Integer.parseInt(todayWeather.getPm25().trim());
             pmImgStr = "0_50";
             if (pmValue > 50 && pmValue < 200) {
@@ -143,33 +152,35 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         if (todayWeather.getType() != null) {
-            typeImg = "biz_plugin_weather_" + PinYin.converterToSpell(todayWeather.getType());
+            typeImg = "biz_plugin_weather_" + PinYin.converterToSpell(todayWeather.getType());//将汉字转化为拼音
         }
-        Class aClass=R.drawable.class;
-        int typeId=-1;
-        int pmImgId=-1;
-        try{
-            Field field=aClass.getField(typeImg);
-            Object value=field.get(new Integer(0));
-            typeId=(int)value;
+        Class aClass = R.drawable.class;
+        int typeId = -1;
+        int pmImgId = -1;
+        try {
+            Field field = aClass.getField(typeImg);
+            Object value = field.get(new Integer(0));
+            typeId = (int) value;
 
-            Field pmfield=aClass.getField("biz_plugin_weather_"+pmImgStr);
-            Object pmImg0=pmfield.get(new Integer(0));
-            pmImgId=(int)pmImg0;
+            Field pmfield = aClass.getField("biz_plugin_weather_" + pmImgStr);
+            Object pmImg0 = pmfield.get(new Integer(0));
+            pmImgId = (int) pmImg0;
 
-        }catch(Exception e){
-            if(-1==typeId){
-                typeId=R.drawable.biz_plugin_weather_qing;
+        } catch (Exception e) {
+            if (-1 == typeId) {
+                typeId = R.drawable.biz_plugin_weather_qing;
             }
-            if(-1==pmImgId){
-                pmImgId=R.drawable.biz_plugin_weather_0_50;
+            if (-1 == pmImgId) {
+                pmImgId = R.drawable.biz_plugin_weather_0_50;
             }
 
-        }finally {
-            Drawable drawable=getResources().getDrawable(typeId);
+        } finally {
+            Drawable drawable = getResources().getDrawable(typeId);
             weatherImg.setImageDrawable(drawable);
-            drawable=getResources().getDrawable(pmImgId);
+            drawable = getResources().getDrawable(pmImgId);
             pmImg.setImageDrawable(drawable);
+            mUpdateProBar.setVisibility(View.INVISIBLE);
+            mUpdatebtn.setVisibility(View.VISIBLE);
             //更新天气图片
             Toast.makeText(MainActivity.this, "更新成功", Toast.LENGTH_LONG).show();
         }
@@ -178,25 +189,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View view){
+    public void onClick(View view) {
 
-        if(view.getId()==R.id.title_update_btn){
+        if (view.getId() == R.id.title_update_btn) {
             //check the network state if it's ok query weather or give warn
-            if(NetUtil.getNetworkState(this)!=NetUtil.NETWORN_NONE){
-                Log.v("myWeather","the network state is ok");
+            if (NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE) {
+                Log.v("myWeather", "the network state is ok");
+                mUpdateProBar.setVisibility(View.VISIBLE);
+                mUpdatebtn.setVisibility(View.INVISIBLE);
                 queryWeatherCode(cityCode);
-            }
-            else{
-                Log.v("myWeather","No Network");
-                Toast.makeText(MainActivity.this,"No Network,Please Check!",Toast.LENGTH_LONG).show();
+            } else {
+                Log.v("myWeather", "No Network");
+                Toast.makeText(MainActivity.this, "No Network,Please Check!", Toast.LENGTH_LONG).show();
             }
 
 
         }
         //add select city listener,通过intent在Activity之间通信
-        else if(view.getId()==R.id.title_city_manager){
-              Intent i=new Intent(MainActivity.this,SelectCity.class);
-              startActivityForResult(i, 1);
+        else if (view.getId() == R.id.title_city_manager) {
+            Intent i = new Intent(MainActivity.this, SelectCity.class);
+            startActivityForResult(i, 1);
         }
     }
 
@@ -212,61 +224,52 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     /**
-     * cityCode用户若选择了城市就是用城市的值否则是用默认值
-      */
-/*    public void setCityCode() {
-        if (cityCode == null) {
-            SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-            cityCode = sharedPreferences.getString("main_city_code", "101010100");
-        }
-    }*/
-
-    /**
      * search the weather information through the network
+     *
      * @param cityCode
      */
 
-    private void queryWeatherCode(String cityCode){
+    private void queryWeatherCode(String cityCode) {
         //get the url address,拼接字符串获得URL地址
         if (cityCode == null || cityCode == " ") {
             SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
             cityCode = sharedPreferences.getString("main_city_code", "101010100");
         }
-        final String address="http://wthrcdn.etouch.cn/WeatherApi?citykey="+cityCode;
-        Log.v("myWeather",address);
-
+        final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
+        Log.v("myWeather", address);
+        //放入子线程中进行以免阻塞主线程
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     //获取网络数据
-                    HttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpget = new HttpGet(address);//传入URL地址获取网页资源
-                    HttpResponse httpResponse = httpClient.execute(httpget);
+                    HttpClient httpClient = new DefaultHttpClient();//创建DefaultHttpClient实例
+                    HttpGet httpget = new HttpGet(address);//发送get请求，创建HttpGet对象，传入URL地址获取网页资源
+                    HttpResponse httpResponse = httpClient.execute(httpget);//发送请求返回一个HttpResponse对象
 
-                    if(httpResponse.getStatusLine().getStatusCode()==200){
-                        HttpEntity entity=httpResponse.getEntity();
+                    if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                        HttpEntity entity = httpResponse.getEntity();
 
-                        InputStream responseStream=entity.getContent();
-                        responseStream=new GZIPInputStream(responseStream);//将文件解压缩
+                        InputStream responseStream = entity.getContent();
+                        responseStream = new GZIPInputStream(responseStream);//将文件解压缩
 
-                        BufferedReader reader=new BufferedReader(new InputStreamReader(responseStream));
-                        StringBuilder response=new StringBuilder();
-                        String str=null;
-                        while((str=reader.readLine())!= null){
-                            response.append(str);//将网页获得的内容转化为String
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));//从字符输入流中读取文本缓冲各个字符
+                        StringBuilder response = new StringBuilder();
+                        String str = null;
+                        while ((str = reader.readLine()) != null) {
+                            response.append(str);//将网页获得的内容转化为StringBuilder
                         }
 
-                        Log.v("myWeather",response.toString());
-                        TodayWeather todayWeather=parseXml(response.toString());
-                        if(todayWeather!=null){
+                        Log.v("myWeather", response.toString());
+                        TodayWeather todayWeather = parseXml(response.toString());
+                        if (todayWeather != null) {
                             //发送消息通知主线程更新UI
-                            Message msg=new Message();
-                            msg.what=UPDATE_TODAY_WEATHER;
-                            msg.obj=todayWeather;
+                            Message msg = new Message();
+                            msg.what = UPDATE_TODAY_WEATHER;
+                            msg.obj = todayWeather;
                             mhandler.sendMessage(msg);
                         }
-                        Log.v("myapp",todayWeather.toString());
+                        Log.v("myapp", todayWeather.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -278,98 +281,89 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     /**
      * parserXMl:use Pull method to parse the XML 解析XML文件
+     *
      * @param xmldata
      * @return
      */
-    private TodayWeather parseXml(String xmldata){
+    private TodayWeather parseXml(String xmldata) {
         //新建TodayWeather对象，将解析出来的数据放入该对象中
-        TodayWeather todayWeather=new TodayWeather();
-        try{
-            int fengxiangCount=0;
-            int fengliCount=0;
-            int dateCount=0;
-            int highCount=0;
-            int lowCount=0;
-            int typeCount=0;
-            //通过工厂方法返回Pull的实例
-            XmlPullParserFactory fac=XmlPullParserFactory.newInstance();
-            XmlPullParser xmlPullParser=fac.newPullParser();
-            xmlPullParser.setInput(new StringReader(xmldata));
-            int eventType=xmlPullParser.getEventType();
+        TodayWeather todayWeather = new TodayWeather();
 
-            while(eventType!=XmlPullParser.END_DOCUMENT){
+        try {
+            int fengxiangCount = 0;
+            int fengliCount = 0;
+            int dateCount = 0;
+            int highCount = 0;
+            int lowCount = 0;
+            int typeCount = 0;
+            //通过工厂方法返回Pull的实例
+            XmlPullParserFactory fac = XmlPullParserFactory.newInstance();
+            XmlPullParser xmlPullParser = fac.newPullParser();
+            xmlPullParser.setInput(new StringReader(xmldata));
+            int eventType = xmlPullParser.getEventType();
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
-                    //判断当前事件是否为文件打开事件
+                    //判断当前事件是否为XML声明
                     case XmlPullParser.START_DOCUMENT:
                         break;
                     //判断当前事件是否为标签元素开始事件
                     case XmlPullParser.START_TAG:
 
                         if (xmlPullParser.getName().equals("city")) {
-                            //触发下一个事件
+                            //利用 xmlPullParser.next()进入下一个元素
                             eventType = xmlPullParser.next();
                             todayWeather.setCity(xmlPullParser.getText());//通过getText()获得xml文件中的文字信息
-                            Log.v("myapp", "the city is" + xmlPullParser.getText());
                         } else if (xmlPullParser.getName().equals("updatetime")) {
                             eventType = xmlPullParser.next();
                             todayWeather.setUpdatetime(xmlPullParser.getText());
-                            Log.v("myapp", "the updatetime is" + xmlPullParser.getText());
                         } else if (xmlPullParser.getName().equals("shidu")) {
                             eventType = xmlPullParser.next();
                             todayWeather.setShidu(xmlPullParser.getText());
-                            Log.v("myapp", "the shidu is" + xmlPullParser.getText());
                         } else if (xmlPullParser.getName().equals("wendu")) {
                             eventType = xmlPullParser.next();
                             todayWeather.setWendu(xmlPullParser.getText());
-                            Log.v("myapp", "the wendu is" + xmlPullParser.getText());
                         } else if (xmlPullParser.getName().equals("pm25")) {
                             eventType = xmlPullParser.next();
                             todayWeather.setPm25(xmlPullParser.getText());
-                            Log.v("myapp", "the pm2.5 is" + xmlPullParser.getText());
                         } else if (xmlPullParser.getName().equals("quality")) {
                             eventType = xmlPullParser.next();
                             todayWeather.setQuality(xmlPullParser.getText());
-                            Log.v("myapp", "the quality is" + xmlPullParser.getText());
+
                         } else if (xmlPullParser.getName().equals("fengxiang") && fengxiangCount == 0) {
                             eventType = xmlPullParser.next();
                             todayWeather.setFengxiang(xmlPullParser.getText());
-                            Log.v("myapp", "the fengxiang is" + xmlPullParser.getText());
                             fengxiangCount++;
                         } else if (xmlPullParser.getName().equals("fengli") && fengliCount == 0) {
                             eventType = xmlPullParser.next();
                             todayWeather.setFengli(xmlPullParser.getText());
-                            Log.v("myapp", "the fengli is" + xmlPullParser.getText());
                             fengliCount++;
                         } else if (xmlPullParser.getName().equals("date") && dateCount == 0) {
                             eventType = xmlPullParser.next();
                             todayWeather.setDate(xmlPullParser.getText());
-                            Log.v("myapp", "the date is" + xmlPullParser.getText());
                             dateCount++;
                         } else if (xmlPullParser.getName().equals("high") && highCount == 0) {
                             eventType = xmlPullParser.next();
                             todayWeather.setHigh(xmlPullParser.getText().substring(2).trim());
-                            Log.v("myapp", "the high is" + xmlPullParser.getText());
                             highCount++;
                         } else if (xmlPullParser.getName().equals("low") && lowCount == 0) {
                             eventType = xmlPullParser.next();
                             todayWeather.setLow(xmlPullParser.getText().substring(2).trim());
-                            Log.v("myapp", "the low is" + xmlPullParser.getText());
                             lowCount++;
                         } else if (xmlPullParser.getName().equals("type") && typeCount == 0) {
                             eventType = xmlPullParser.next();
                             todayWeather.setType(xmlPullParser.getText());
-                            Log.v("myapp", "the type is" + xmlPullParser.getText());
                             typeCount++;
                         }
                         break;
-                   // case XmlPullParser.END_TAG:
-                     //   break;
+                    case XmlPullParser.END_TAG:
+                        break;
                 }
 
-                eventType=xmlPullParser.next();
+                eventType = xmlPullParser.next();
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

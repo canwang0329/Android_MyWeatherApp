@@ -26,9 +26,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ffffffff"
-            android:textSize="40sp"
+            android:textSize="30sp"
             android:layout_marginLeft="25dip"
-            android:layout_marginTop="15dip"
+            android:layout_marginTop="10dip"
          />
         
        <!-- To add the time-->
@@ -113,7 +113,7 @@
             android:id="@+id/weatherpic"
             android:layout_width="130dip"
             android:layout_height="130dip"
-            android:layout_marginTop="20dip"
+            android:layout_marginTop="18dip"
             android:layout_alignTop="@+id/wet"
             android:layout_alignParentLeft="true"/>
 
@@ -122,20 +122,20 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="19sp"
             android:textColor="#ffffffff"
             android:text="今天 星期四"
             android:layout_below="@+id/result"
             android:layout_toRightOf="@+id/weatherpic"
             android:layout_marginLeft="5dip"
-            android:layout_marginTop="10dip"
+
             />
         <!--To add the temperature -->
         <TextView
             android:id="@+id/temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="19sp"
             android:textColor="#ffffffff"
             android:text="5℃～-5℃"
             android:layout_below="@+id/date"
@@ -147,7 +147,7 @@
             android:id="@+id/weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="19sp"
             android:textColor="#ffffffff"
             android:text="晴转多云"
             android:layout_below="@+id/temperature"
@@ -160,12 +160,23 @@
             android:id="@+id/wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="19sp"
             android:textColor="#ffffffff"
             android:text="微风"
             android:layout_below="@+id/weather"
             android:layout_toRightOf="@+id/weatherpic"
             android:layout_alignLeft="@+id/date"
             />
-        </RelativeLayout>
+
+        <!--显示七天天气 -->
+        <!--利用include属性引入main_title布局文件减少代码冗余 -->
+        <include
+            layout="@layout/week_weather_layout"
+            android:id="@+id/week_weather_infomation"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/weatherpic"
+            android:orientation="horizontal"/>
+    </RelativeLayout>
+
 </RelativeLayout>

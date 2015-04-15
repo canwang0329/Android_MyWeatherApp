@@ -14,7 +14,7 @@ public class NetUtil {
     public static final int NETWORN_MOBILE=2;
 
     public static int getNetworkState(Context context){
-        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);//ConnectivityManager管理网络连接的相关的类
 
         //check wifi first
         State state = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();

@@ -26,7 +26,7 @@ public class CityDB {
 
     public List<City> getAllCity(){
         List<City> list = new ArrayList<>();
-        Cursor c = db.rawQuery("select * from " + CITY_TABLE_NAME, null);//返回多行数据
+        Cursor c = db.rawQuery("select * from " + CITY_TABLE_NAME , null);//返回多行数据
         while (c.moveToNext()) {
             String province = c.getString(c.getColumnIndex("province"));
             String city = c.getString(c.getColumnIndex("city"));
@@ -44,7 +44,7 @@ public class CityDB {
     public List<String> searchCity(String city) {
 
         List<String> resultList = new ArrayList<>();
-        Cursor c = db.rawQuery("select * from " + CITY_TABLE_NAME +" where city like " + "'%" + city + "%'", null);//返回多行数据
+        Cursor c = db.rawQuery("select * from " + CITY_TABLE_NAME +" where city like " + "'%" + city + "%'" + " or (allpy like '" + city + "%')" + "or (allfirstpy = '" + city + "')", null);//返回多行数据
         while (c.moveToNext()) {
             String  result = c.getString(c.getColumnIndex("city"));
             if (result != null || result != "") {

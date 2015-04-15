@@ -44,14 +44,13 @@ public class MyApplication extends Application {
                 + CityDB.CITY_DB_NAME;
         //打开db文件
         File db=new File(path);
-        Log.v(tag,path);
         //如果db文件不存在则从asset文件夹中读取city文件并创建db文件
         if(!db.exists()){
             Log.v(tag,"my db doesn't exist");
             try {
-                InputStream input = getAssets().open("city.db");
-                db.getParentFile().mkdirs();
-                FileOutputStream fos=new FileOutputStream(db);
+                InputStream input = getAssets().open("city.db");//获得db文件的InputStream对象
+                db.getParentFile().mkdirs();//创建文件目录
+                FileOutputStream fos=new FileOutputStream(db);//创建文件输出流
                 int length=-1;
                 byte buffer[]=new byte[1024];
                 while((length=input.read(buffer))!=-1){
@@ -78,13 +77,12 @@ public class MyApplication extends Application {
         }).start();
     }
 
-    public List<String> prepareCityList(){
+    private List<String> prepareCityList(){
         List<String> mcity=new ArrayList<>();
         mCityList=mCityDB.getAllCity();//获取数据库返回记录
         for(City city:mCityList){
             String cityname=city.getCity();
             String cityNumber=city.getNumber();
-
             mcity.add(cityname);
             Log.v(tag,cityname);
         }

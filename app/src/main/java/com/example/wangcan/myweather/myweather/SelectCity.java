@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wangcan.myweather.R;
@@ -73,6 +74,8 @@ public class SelectCity extends Activity implements View.OnClickListener {
         });
 
     }
+
+
     @Override
     public void onClick(View view){
            switch(view.getId()){
@@ -108,22 +111,40 @@ public class SelectCity extends Activity implements View.OnClickListener {
         private int editStart;
         private int editEnd;
         @Override
+        /**This method is called to notify you that, within s, the count characters
+         * beginning at start are about to be replaced by new text with length after.
+         * 在s中，从start处开始的count个字符将要被长度为after的文本替代
+         * s 为变化前的内容；
+         * start 为开始变化位置的索引，从0开始计数；
+         * count 为将要发生变化的字符数
+         * after 为用来替换旧文本的长度，比如s由1变为12，after为1，由12变为1，after为0；
+         */
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             temp = s;
             Log.d("myapp","beforeTextChanged"+s );
-            Log.d("myApp","the first cityList is"+cityList.hashCode());
+            Log.d("myapp","before:s,"+s+",start,"+start+",count,"+count+",after,"+after);
         }
 
         @Override
+        /**
+         * This method is called to notify you that, within s, the count characters
+         *  beginning at start have just replaced old text that had length before
+         *  在s中，从start处开始的count个字符刚刚替换了原来长度为before的文本
+         *  s 为变化后的内容；
+         *  start 为开始变化位置的索引，从0开始计数；
+         *  before 为被取代的老文本的长度，比如s由1变为12，before为0，由12变为1，before为1；
+         *  count 为将要发生变化的字符数
+         */
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-           Log.d("myapp","onTextChanged："+ s);
+           Log.d("myapp","ing:s,"+s+",start,"+start+",before,"+before+",count,"+count);
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             editStart = mEditTxt.getSelectionStart();
             editEnd = mEditTxt.getSelectionEnd();
-            if (temp.length() > 0 || temp.length() == 0) {
+            Log.d("myapp",s.toString());
+            if (s.length() > 0 || s.length() == 0) {
                 String data = mEditTxt.getText().toString();
                 getDataSub(data);//为cityList重新绑定数据
                 //发送消息通知主线程更新UI
@@ -166,6 +187,7 @@ public class SelectCity extends Activity implements View.OnClickListener {
             }
 
         } else {
+            data.toUpperCase();
             temList = mCityDB.searchCity(data);//通过模糊查询返回搜索结果
             if(!temList.isEmpty()) {
                 for (int i = 0; i < temList.size(); i++) {
